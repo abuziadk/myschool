@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>رفع الشهادات</title>
+</head>
+<body>
+    <h1>رفع ملفات الشهادات</h1>
+    <input type="file" id="file" multiple>
+    <button onclick="uploadFiles()">رفع الملفات</button>
+    <div id="uploadStatus"></div>
+    <script>
+        async function uploadFiles() {
+            const files = document.getElementById('file').files;
+            const formData = new FormData();
+            for (const file of files) {
+                formData.append('files', file);
+            }
+            const response = await fetch(`/upload`, {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.json();
+            document.getElementById('uploadStatus').textContent = result.message;
+        }
+    </script>
+</body>
+</html>

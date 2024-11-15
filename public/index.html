@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>صفحة رفع الشهادات</title>
+    <style>
+        /* تنسيقات بسيطة */
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+        input[type="file"], button { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>رفع الشهادة</h1>
+    <input type="file" id="fileInput">
+    <button onclick="uploadFile()">رفع</button>
+    <p id="statusMessage"></p>
+
+    <script>
+        function uploadFile() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            const formData = new FormData();
+            formData.append('file', file);
+
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('statusMessage').textContent = data.message;
+            })
+            .catch(error => {
+                document.getElementById('statusMessage').textContent = 'فشل الرفع!';
+            });
+        }
+    </script>
+</body>
+</html>
