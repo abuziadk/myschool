@@ -1,17 +1,32 @@
 const express = require('express');
-const app = express();
+const multer = require('multer');
 const path = require('path');
 
-// إعداد استضافة الملفات الثابتة
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.static(path.join(__dirname, 'pages')));
-
-// تحديد مسارات API
-app.use('/api/upload', require('./api/upload'));
-app.use('/api/search', require('./api/search'));
-
-// تشغيل الخادم
+const app = express();
 const PORT = process.env.PORT || 3000;
+
+// إعداد مجلد التخزين
+const storage = multer.diskStorage({
+    destination: 'uploads/', // مجلد التخزين
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname));
+    }
+});
+
+const upload = multer({ storage: storage });
+
+// تفعيل ملفات ثابتة ليتمكن المستخدمون من رؤية صفحة الرفع
+app.use(express.static('public'));
+
+// مسار رفع الملفات
+app.post('/upload', upload.single('file'), (req, res) => {
+    if (req.file) {
+        res.status(200).json({ message: 'تم الرفع بنجاح!' });
+    } else {
+        res.status(400).json({ message: 'خطأ في الرفع' });
+    }
+});
+
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`الخادم يعمل على المنفذ ${PORT}`);
 });
