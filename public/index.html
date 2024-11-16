@@ -2,25 +2,38 @@
 <html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <title>رفع الشهادات</title>
-    <style>/* أضف بعض التنسيقات هنا */</style>
+    <title>صفحة رفع الشهادات</title>
+    <style>
+        /* تنسيقات بسيطة */
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+        input[type="file"], button { margin-top: 20px; }
+    </style>
 </head>
 <body>
-    <h1>رفع الشهادات إلى الخادم</h1>
-    <form id="uploadForm" enctype="multipart/form-data">
-        <input type="file" name="certificate" required>
-        <button type="submit">رفع الشهادة</button>
-    </form>
-    <div id="message"></div>
+    <h1>رفع الشهادة</h1>
+    <input type="file" id="fileInput">
+    <button onclick="uploadFile()">رفع</button>
+    <p id="statusMessage"></p>
 
     <script>
-        document.getElementById('uploadForm').onsubmit = async (e) => {
-            e.preventDefault();
-            const formData = new FormData(e.target);
-            const response = await fetch('/upload', { method: 'POST', body: formData });
-            const result = await response.json();
-            document.getElementById('message').textContent = result.message;
-        };
+        function uploadFile() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            const formData = new FormData();
+            formData.append('file', file);
+
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('statusMessage').textContent = data.message;
+            })
+            .catch(error => {
+                document.getElementById('statusMessage').textContent = 'فشل الرفع!';
+            });
+        }
     </script>
 </body>
 </html>
