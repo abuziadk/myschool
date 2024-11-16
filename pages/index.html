@@ -1,50 +1,39 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar">
 <head>
-    <meta charset="utf-8">
-    <title>نتائج الفصل الأول للعام 1445/1446</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <meta charset="UTF-8">
+    <title>صفحة رفع الشهادات</title>
     <style>
-        
+        /* تنسيقات بسيطة */
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+        input[type="file"], button { margin-top: 20px; }
     </style>
 </head>
 <body>
+    <h1>رفع الشهادة</h1>
+    <input type="file" id="fileInput">
+    <button onclick="uploadFile()">رفع</button>
+    <p id="statusMessage"></p>
 
-    <center>
-        <img src="banner99.png" alt="logo1" width="250" height=250>
-		<br>
-		<br>
+    <script>
+        function uploadFile() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            const formData = new FormData();
+            formData.append('file', file);
 
-        <div class="input-container">
-            <input type="search" id="search" placeholder="السجل المدني" value="">
-            <i class="fas fa-search"></i>
-        </div>
-        <input type="button" id="button" onclick="school()" value="عرض النتيجة">
-    </center>
-
-    <audio id="background-music" src="song.mp3"></audio>
-	        <img src="bannersch-removebg-preview.png" alt="logo1" width="150" height="100">
-			
-    <footer>
-	
-
-
-	
-		
-
-        <p><b><i>All rights reserved &copy; 2024</b></i></p>
-        <p><b>Programming and design by Eng.Khalil Abuhozah<i></b></p>
-        <div class="social-icons">
-            <a href="https://wa.me/+966548884252" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
-            <a href="https://www.facebook.com/khalil.abuhozah/" target="_blank"><i class="fab fa-facebook"></i> Facebook</a>
-            <a href="https://x.com/abuhawzah/" target="_blank"><i class="fab fa-twitter"></i> Twitter</a>
-			<hr>
-        </div>
-
-    </footer>
-
-    <script src="script.js"></script>
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('statusMessage').textContent = data.message;
+            })
+            .catch(error => {
+                document.getElementById('statusMessage').textContent = 'فشل الرفع!';
+            });
+        }
+    </script>
 </body>
 </html>
